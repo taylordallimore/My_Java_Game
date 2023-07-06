@@ -11,15 +11,20 @@ import javax.swing.JPanel;
 
 import inputs.KeyboardInputs;
 import inputs.MouseInputs;
+import util.Constants;
+import util.Constants.posEnum;
 
 public class GamePanel extends JPanel {
 
     private MouseInputs mouseInputs;
-    private float xDelta = 100, yDelta = 100;
+    private float xDelta = 50, yDelta = 50;
     private int x = 0, y = 0;
     private BufferedImage img;
     private BufferedImage[][] animations;
-    private int animationTick, animationIndex, animationSpeed = 20;
+    private int animationTick, animationIndex;
+    private static posEnum currentAni = Constants.posEnum.IDLE1; 
+    private int animationSpeed = 15;
+
 
     public GamePanel() {
         mouseInputs = new MouseInputs(this);
@@ -32,7 +37,7 @@ public class GamePanel extends JPanel {
     }
 
     private void loadAnimations() {
-        animations = new BufferedImage[6][7];
+        animations = new BufferedImage[7][7];
         for (int j = 0; j < animations.length; j++) {
             for (int i = 0; i < animations[j].length; i++) {
                 animations[j][i] = img.getSubimage(i * 32, j * 32, 32, 32);
@@ -82,7 +87,7 @@ public class GamePanel extends JPanel {
         if (animationTick >= animationSpeed) {
             animationTick = 0;
             animationIndex++;
-            if (animationIndex >= 7) {
+            if (animationIndex >= Constants.getAniNums(currentAni)) {
                 animationIndex = 0;
             }
         }
@@ -91,6 +96,12 @@ public class GamePanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         updateAnimationTick();
-        g.drawImage(animations[2][animationIndex], (int) xDelta, (int) yDelta, 128, 128, null);
+        try {
+             g.drawImage(animations[Constants.getAniLocation(currentAni)][animationIndex], (int) xDelta, (int) yDelta, 170, 170, null);
+        } catch (Exception e) {
+            System.out.println("error on load image");
+            System.exit(ABORT);
+        }
+       
     }
 }
