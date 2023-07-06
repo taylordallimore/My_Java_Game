@@ -13,6 +13,7 @@ import inputs.KeyboardInputs;
 import inputs.MouseInputs;
 import util.Constants;
 import util.Constants.posEnum;
+import util.Constants.Directions;
 
 public class GamePanel extends JPanel {
 
@@ -21,10 +22,12 @@ public class GamePanel extends JPanel {
     private int x = 0, y = 0;
     private BufferedImage img;
     private BufferedImage[][] animations;
-    private int animationTick, animationIndex;
-    private static posEnum currentAni = Constants.posEnum.IDLE1; 
-    private int animationSpeed = 15;
+    private int animationTick, animationIndex, animationSpeed = 20;
+    private static posEnum currentAni = posEnum.IDLE1;
+    private int playerDirection = -1;
+    private boolean moving = false;
 
+    public static int randomInt = 1;
 
     public GamePanel() {
         mouseInputs = new MouseInputs(this);
@@ -37,7 +40,7 @@ public class GamePanel extends JPanel {
     }
 
     private void loadAnimations() {
-        animations = new BufferedImage[7][7];
+        animations = new BufferedImage[7][8];
         for (int j = 0; j < animations.length; j++) {
             for (int i = 0; i < animations[j].length; i++) {
                 animations[j][i] = img.getSubimage(i * 32, j * 32, 32, 32);
@@ -66,20 +69,13 @@ public class GamePanel extends JPanel {
 
     }
 
-    public void changeXDelta(int value) {
-        this.xDelta += value;
-        repaint();
+    public void setDirection(int direction) {
+        this.playerDirection = direction;
+        moving = true;
     }
 
-    public void changeYDelta(int value) {
-        this.yDelta += value;
-
-    }
-
-    public void setPosition(int x, int y) {
-        this.xDelta = x;
-        this.yDelta = y;
-
+    public void setMoving(boolean moving) {
+        this.moving = moving;
     }
 
     private void updateAnimationTick() {
@@ -93,15 +89,56 @@ public class GamePanel extends JPanel {
         }
     }
 
+    private void setAnimation() {
+        if (moving) {
+            currentAni = posEnum.JUMPING;
+        } else {
+            //if(randomInt == 1){
+            currentAni = posEnum.IDLE1;
+            }
+            // else{
+            //     currentAni = posEnum.IDLE2;
+            // }
+        //}
+    }
+
+    private void updatePosition(){
+        if(moving){
+            switch(playerDirection){
+                case Directions.LEFT:
+                xDelta -= 5;
+                    break;
+                case Directions.RIGHT:
+                xDelta += 5;
+                    break;
+                case Directions.UP:
+                yDelta -= 5;
+                    break;
+                case Directions.DOWN:
+                yDelta += 5;
+                break;
+
+            }
+        }
+    }
+
+    public static void setRandomInt(int randomInt) {
+        GamePanel.randomInt = randomInt;
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         updateAnimationTick();
+        setAnimation();
+        updatePosition();
         try {
-             g.drawImage(animations[Constants.getAniLocation(currentAni)][animationIndex], (int) xDelta, (int) yDelta, 170, 170, null);
+            g.drawImage(animations[Constants.getAniLocation(currentAni)][animationIndex], (int) xDelta, (int) yDelta,
+                    170, 170, null);
         } catch (Exception e) {
             System.out.println("error on load image");
             System.exit(ABORT);
         }
-       
+
     }
+
 }

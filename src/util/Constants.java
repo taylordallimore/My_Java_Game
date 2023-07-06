@@ -3,7 +3,7 @@ package util;
 public class Constants {
 
     public enum posEnum {
-        RUNNING, IDLE1, IDLE2, JUMPING, FALLING, DEAD, EATING;
+        RUNNING, IDLE1, NO, JUMPING, FALLING, DEAD, EATING;
     }
 
     public static int getAniNums(posEnum c) {
@@ -12,14 +12,14 @@ public class Constants {
                 return 4;
             case IDLE1:
                 return 6;
-            case IDLE2:
+            case NO:
                 return 6;
             case JUMPING:
-                return 7;
+                return 8;
             case DEAD:
-                return 4;
+                return 2;
             case FALLING:
-                return 4;
+                return 2;
             case EATING:
                 return 2;
         }
@@ -31,7 +31,7 @@ public class Constants {
         switch (c) {
             case IDLE1:
                 return 0;
-            case IDLE2:
+            case NO:
                 return 1;
             case JUMPING:
                 return 2;
@@ -45,5 +45,12 @@ public class Constants {
                 return 6;
         }
         return 1;
+    }
+
+    public static class Directions{
+        public static final int LEFT = 0;
+        public static final int UP = 1;
+        public static final int RIGHT = 2;
+        public static final int DOWN = 3;
     }
 }
